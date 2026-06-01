@@ -1,0 +1,64 @@
+name: Build binaries
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-13         # Intel Mac
+            artifact: yt-timed-text-mac-intel
+          - os: macos-14         # Apple Silicon
+            artifact: yt-timed-text-mac-arm64
+          - os: windows-latest
+            artifact: yt-timed-text-windows
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Build
+        run: pyinstaller yt_timed_text.spec
+
+      - name: Rename binary (unix)
+        if: runner.os != 'Windows'
+        run: mv dist/yt-timed-text dist/${{ matrix.artifact }}
+
+      - name: Rename binary (windows)
+        if: runner.os == 'Windows'
+        run: Move-Item dist/yt-timed-text.exe dist/${{ matrix.artifact }}.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: List
+        run: ls -R artifacts
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*

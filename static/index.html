@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YT Timed Text</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>YT Timed Text</h1>
+    <p class="tag">Paste a YouTube video URL or channel URL.</p>
+  </header>
+
+  <main>
+    <form id="urlForm" autocomplete="off">
+      <input
+        id="urlInput"
+        type="text"
+        placeholder="https://www.youtube.com/watch?v=... or https://www.youtube.com/@channel"
+        required>
+      <button type="submit" id="goBtn">Go</button>
+    </form>
+
+    <div id="status" class="status"></div>
+
+    <!-- Video view -->
+    <section id="videoView" class="card hidden">
+      <div class="video-head">
+        <img id="vThumb" alt="">
+        <div>
+          <h2 id="vTitle"></h2>
+          <p id="vMeta" class="muted"></p>
+        </div>
+      </div>
+      <div class="row">
+        <label>Language:
+          <select id="vLang"></select>
+        </label>
+        <button id="vDownload">Download JSON</button>
+      </div>
+    </section>
+
+    <!-- Channel view -->
+    <section id="channelView" class="card hidden">
+      <div class="channel-head">
+        <h2 id="cTitle"></h2>
+        <p id="cMeta" class="muted"></p>
+      </div>
+      <div class="row sticky">
+        <label><input type="checkbox" id="cAll"> Select all visible</label>
+        <input id="cFilter" placeholder="Filter titles..." type="search">
+        <label>Language:
+          <select id="cLang">
+            <option value="en">en</option>
+            <option value="en-US">en-US</option>
+            <option value="es">es</option>
+            <option value="fr">fr</option>
+            <option value="de">de</option>
+            <option value="pt">pt</option>
+            <option value="ja">ja</option>
+            <option value="ko">ko</option>
+          </select>
+        </label>
+        <span id="cCount" class="muted">0 videos</span>
+        <button id="cDownload" disabled>Download selected (0)</button>
+      </div>
+      <div class="table-wrap">
+        <table id="cTable">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Thumbnail</th>
+              <th>Title</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody id="cBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Local-only. Captions cached at ~/.yt_timed_text_cache</small>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
