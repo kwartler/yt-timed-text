@@ -11,9 +11,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-13         # Intel Mac
+          - os: macos-13
             artifact: yt-timed-text-mac-intel
-          - os: macos-14         # Apple Silicon
+          - os: macos-14
             artifact: yt-timed-text-mac-arm64
           - os: windows-latest
             artifact: yt-timed-text-windows
@@ -47,7 +47,7 @@ jobs:
           name: ${{ matrix.artifact }}
           path: dist/${{ matrix.artifact }}*
 
- release:
+  release:
     needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
@@ -57,11 +57,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
-          merge-multiple: true  
+          merge-multiple: true
 
       - name: List
         run: ls -R artifacts
 
       - uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/* 
+          files: artifacts/*
