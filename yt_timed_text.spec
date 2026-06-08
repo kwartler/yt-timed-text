@@ -53,3 +53,10 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
 )
+
+if sys.platform == "darwin":
+    app_bundle = BUNDLE(
+        exe,
+        name="yt-timed-text.app",
+        bundle_identifier="com.kwartler.yt-timed-text",
+    )

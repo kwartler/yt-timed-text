@@ -35,18 +35,27 @@ jobs:
       - name: Build
         run: pyinstaller yt_timed_text.spec
 
-      - name: Rename binary (unix)
-        if: runner.os != 'Windows'
-        run: mv dist/yt-timed-text dist/${{ matrix.artifact }}
+      - name: Package app bundle (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cd dist
+          zip -r ${{ matrix.artifact }}.zip yt-timed-text.app
 
       - name: Rename binary (windows)
         if: runner.os == 'Windows'
         run: Move-Item dist/yt-timed-text.exe dist/${{ matrix.artifact }}.exe
 
       - uses: actions/upload-artifact@v4
+        if: runner.os == 'macOS'
         with:
           name: ${{ matrix.artifact }}
-          path: dist/${{ matrix.artifact }}*
+          path: dist/${{ matrix.artifact }}.zip
+
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Windows'
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}.exe
 
   release:
     needs: build
