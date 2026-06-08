@@ -24,6 +24,19 @@ header {
 }
 header h1 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
 header .tag { margin: 4px 0 0; color: var(--muted); }
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#quitBtn {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--muted);
+  font-size: 13px;
+  padding: 6px 12px;
+}
+#quitBtn:hover { background: var(--accent); border-color: var(--accent); color: white; }
 
 main {
   max-width: 1080px;

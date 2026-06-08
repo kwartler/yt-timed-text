@@ -26,6 +26,9 @@ from fastapi.responses import (
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+import os
+import signal
+
 import extractor
 
 
@@ -160,6 +163,20 @@ def captions_batch(body: BatchBody):
         media_type="application/zip",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+# ---------------------------------------------------------------------------
+# Shutdown
+# ---------------------------------------------------------------------------
+
+@app.post("/api/shutdown")
+def shutdown():
+    """Gracefully stop the server. Called by the in-browser Quit button."""
+    def _kill():
+        time.sleep(0.3)  # let the response reach the browser first
+        os.kill(os.getpid(), signal.SIGTERM)
+    threading.Thread(target=_kill, daemon=True).start()
+    return {"ok": True}
 
 
 # ---------------------------------------------------------------------------

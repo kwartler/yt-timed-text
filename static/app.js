@@ -1,4 +1,16 @@
 // YT Timed Text frontend
+
+// -------- Quit button --------
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("quitBtn").addEventListener("click", async () => {
+    if (!confirm("Stop the server and close the app?")) return;
+    try {
+      await fetch("/api/shutdown", { method: "POST" });
+    } catch (_) { /* server already gone */ }
+    document.body.innerHTML = "<div style='padding:40px;font-family:sans-serif;color:#8a93a3'>Server stopped. You can close this tab.</div>";
+  });
+});
+
 const $ = (s) => document.querySelector(s);
 const statusEl = $("#status");
 
