@@ -202,11 +202,26 @@ def _try_self_update_ytdlp():
 # Entrypoint
 # ---------------------------------------------------------------------------
 
+def _port_in_use(port: int) -> bool:
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(("127.0.0.1", port)) == 0
+
+
 def main():
     import uvicorn
 
     port = 8000
     url = f"http://127.0.0.1:{port}"
+
+    # If a server is already running, just (re-)open the browser and exit.
+    if _port_in_use(port):
+        print(f"\nYT Timed Text is already running at {url} — opening browser.\n")
+        try:
+            webbrowser.open(url)
+        except Exception:
+            pass
+        return
 
     # Auto-update yt-dlp in the background (no-op when running as a frozen binary)
     if not getattr(sys, "frozen", False):
