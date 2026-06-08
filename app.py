@@ -214,12 +214,20 @@ def main():
     port = 8000
     url = f"http://127.0.0.1:{port}"
 
-    # If a server is already running, just (re-)open the browser and exit.
+    # If a server is already running, just (re-)open the browser and wait.
+    # We intentionally keep this Terminal window open rather than exiting
+    # immediately — macOS treats an app that quits in under ~5 s as a crash
+    # and will block future launches with "not open anymore".
     if _port_in_use(port):
-        print(f"\nYT Timed Text is already running at {url} — opening browser.\n")
+        print(f"\nYT Timed Text is already running at {url}")
+        print("Opening browser… close this window whenever you like.\n")
         try:
             webbrowser.open(url)
         except Exception:
+            pass
+        try:
+            input()  # keep the Terminal alive until the user closes it
+        except (EOFError, KeyboardInterrupt):
             pass
         return
 
